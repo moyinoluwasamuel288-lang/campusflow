@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusFlow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎓 CampusFlow</h1>
+    <p class="subtitle">Student Productivity & CGPA Tracker</p>
+
+    <!-- CGPA SECTION -->
+    <section>
+      <h2>CGPA Calculator</h2>
+      <div id="course-list"></div>
+
+      <button onclick="addCourse()">+ Add Course</button>
+      <button onclick="calculateCGPA()">Calculate CGPA</button>
+
+      <h3 id="result"></h3>
+    </section>
+
+    <!-- NOTES SECTION -->
+    <section>
+      <h2>Quick Notes</h2>
+      <textarea id="notes" placeholder="Write something..."></textarea>
+      <button onclick="saveNotes()">Save Notes</button>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section>
+      <h2>Exam Countdown</h2>
+      <input type="date" id="examDate">
+      <button onclick="setCountdown()">Set Countdown</button>
+      <h3 id="countdown"></h3>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
