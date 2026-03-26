@@ -1,4 +1,4 @@
-﻿// LOAD SAVED NOTES
+// LOAD SAVED NOTES
 window.onload = () => {
   document.getElementById("notes").value = localStorage.getItem("notes") || "";
 };
@@ -34,16 +34,19 @@ function calculateCGPA() {
     const unit = parseFloat(units[i].value);
     const grade = parseFloat(grades[i].value);
 
-    if (!isNaN(unit)) {
+    if (!isNaN(unit) && unit > 0) {
       totalUnits += unit;
       totalPoints += unit * grade;
     }
   }
 
-  const cgpa = totalPoints / totalUnits;
+  if (totalUnits === 0) {
+    document.getElementById("result").innerText = "Enter valid data";
+    return;
+  }
 
-  document.getElementById("result").innerText =
-    totalUnits ? `Your CGPA: ${cgpa.toFixed(2)}` : "Enter valid data";
+  const cgpa = totalPoints / totalUnits;
+  document.getElementById("result").innerText = `Your CGPA: ${cgpa.toFixed(2)}`;
 }
 
 // SAVE NOTES
@@ -54,8 +57,27 @@ function saveNotes() {
 }
 
 // COUNTDOWN
+let countdownInterval;
+
 function setCountdown() {
-  const examDate = new Date(document.getElementById("examDate").value);
+  const examDateInput = document.getElementById("examDate").value;
+  
+  if (!examDateInput) {
+    document.getElementById("countdown").innerText = "Please select a date";
+    return;
+  }
+
+  const examDate = new Date(examDateInput);
+  
+  if (isNaN(examDate.getTime())) {
+    document.getElementById("countdown").innerText = "Invalid date";
+    return;
+  }
+
+  // Clear any existing countdown interval
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+  }
 
   function updateCountdown() {
     const now = new Date();
@@ -63,6 +85,7 @@ function setCountdown() {
 
     if (diff <= 0) {
       document.getElementById("countdown").innerText = "Exam Day!";
+      clearInterval(countdownInterval);
       return;
     }
 
@@ -71,5 +94,5 @@ function setCountdown() {
   }
 
   updateCountdown();
-  setInterval(updateCountdown, 1000);
+  countdownInterval = setInterval(updateCountdown, 1000);
 }
