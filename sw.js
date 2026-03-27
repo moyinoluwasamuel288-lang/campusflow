@@ -1,4 +1,4 @@
-﻿self.addEventListener("install", e => {
+self.addEventListener("install", e => {
   e.waitUntil(
     caches.open("campus-cache").then(cache => {
       return cache.addAll([
