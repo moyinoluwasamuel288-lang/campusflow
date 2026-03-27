@@ -5,6 +5,7 @@ const fontSelect = document.getElementById("fontSelect");
 window.onload = () => {
   textarea.value = localStorage.getItem("notes") || "";
   const font = localStorage.getItem("font");
+
   if (font) {
     textarea.style.fontFamily = font;
     fontSelect.value = font;
@@ -13,7 +14,6 @@ window.onload = () => {
 
 textarea.addEventListener("input", () => {
   localStorage.setItem("notes", textarea.value);
-  showToast("Saved");
 });
 
 fontSelect.addEventListener("change", (e) => {
@@ -77,22 +77,51 @@ function setCountdown() {
 
 // ================= AI =================
 async function runAI() {
-  const input = document.getElementById("aiInput").value;
-  const output = document.getElementById("aiOutput");
+  const inputEl = document.getElementById("aiInput");
+  const chatBox = document.getElementById("chatBox");
 
-  output.innerText = "Thinking...";
+  const userMsg = inputEl.value;
+  if (!userMsg) return;
+
+  addMessage(userMsg, "user");
+  inputEl.value = "";
+
+  let reply = "Thinking...";
 
   try {
     const res = await fetch(
-      "https://api.allorigins.win/raw?url=https://api.affiliateplus.xyz/api/chatbot?message=" +
-      encodeURIComponent(input)
+      "https://api.affiliateplus.xyz/api/chatbot?message=" +
+      encodeURIComponent(userMsg)
     );
-
     const data = await res.json();
-    output.innerText = data.message;
+    reply = data.message || getLocalAI(userMsg);
   } catch {
-    output.innerText = "AI failed.";
+    reply = getLocalAI(userMsg);
   }
+
+  addMessage(reply, "bot");
+}
+
+function getLocalAI(input) {
+  input = input.toLowerCase();
+
+  if (input.includes("study")) return "Try 25-minute focus sessions.";
+  if (input.includes("tired")) return "Take a short break.";
+  if (input.includes("cgpa")) return "Track your units properly.";
+  if (input.includes("motivation")) return "Discipline beats motivation.";
+
+  return "Stay consistent. You're building something great.";
+}
+
+function addMessage(text, type) {
+  const chatBox = document.getElementById("chatBox");
+
+  const div = document.createElement("div");
+  div.className = `msg ${type}`;
+  div.innerText = text;
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // ================= TIMER =================
@@ -112,16 +141,6 @@ function startTimer(mins) {
       }
     }
   }, 1000);
-}
-
-// ================= TOAST =================
-function showToast(msg) {
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerText = msg;
-  document.body.appendChild(t);
-
-  setTimeout(() => t.remove(), 1500);
 }
 
 // ================= SERVICE WORKER =================
