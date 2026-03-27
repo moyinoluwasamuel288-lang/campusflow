@@ -1,149 +1,103 @@
-// ================= NOTES =================
-const textarea = document.getElementById("notes");
-const fontSelect = document.getElementById("fontSelect");
-
-window.onload = () => {
-  textarea.value = localStorage.getItem("notes") || "";
-  const font = localStorage.getItem("font");
-
-  if (font) {
-    textarea.style.fontFamily = font;
-    fontSelect.value = font;
-  }
+// LOAD NOTES
+window.onload = function () {
+  document.getElementById("notes").value =
+    localStorage.getItem("notes") || "";
 };
 
-textarea.addEventListener("input", () => {
-  localStorage.setItem("notes", textarea.value);
-});
+// SAVE NOTES
+function saveNotes() {
+  const notes = document.getElementById("notes").value;
+  localStorage.setItem("notes", notes);
+  alert("Saved!");
+}
 
-fontSelect.addEventListener("change", (e) => {
-  textarea.style.fontFamily = e.target.value;
-  localStorage.setItem("font", e.target.value);
-});
+// CHANGE FONT
+function changeFont(font) {
+  document.getElementById("notes").style.fontFamily = font;
+}
 
-// ================= CGPA =================
+// ADD COURSE
 function addCourse() {
   const div = document.createElement("div");
 
   div.innerHTML = `
-    <input type="number" class="unit" placeholder="Units">
-    <input type="number" class="grade" placeholder="Grade">
+    <input type="number" placeholder="Units" class="unit">
+    <select class="grade">
+      <option value="5">A</option>
+      <option value="4">B</option>
+      <option value="3">C</option>
+      <option value="2">D</option>
+      <option value="1">E</option>
+      <option value="0">F</option>
+    </select>
   `;
 
   document.getElementById("course-list").appendChild(div);
 }
 
+// CALCULATE CGPA
 function calculateCGPA() {
   const units = document.querySelectorAll(".unit");
   const grades = document.querySelectorAll(".grade");
 
-  let totalU = 0;
-  let totalP = 0;
+  let totalUnits = 0;
+  let totalPoints = 0;
 
-  units.forEach((u, i) => {
-    const unit = parseFloat(u.value);
-    const grade = parseFloat(grades[i].value);
+  for (let i = 0; i < units.length; i++) {
+    let u = parseFloat(units[i].value);
+    let g = parseFloat(grades[i].value);
 
-    if (!isNaN(unit) && !isNaN(grade)) {
-      totalU += unit;
-      totalP += unit * grade;
+    if (!isNaN(u) && !isNaN(g)) {
+      totalUnits += u;
+      totalPoints += u * g;
     }
-  });
+  }
+
+  let cgpa = totalPoints / totalUnits;
 
   document.getElementById("result").innerText =
-    totalU ? "CGPA: " + (totalP / totalU).toFixed(2) : "Invalid input";
+    isNaN(cgpa) ? "Invalid input" : "CGPA: " + cgpa.toFixed(2);
 }
 
-// ================= COUNTDOWN =================
+// COUNTDOWN
 function setCountdown() {
-  const end = new Date(document.getElementById("examDate").value).getTime();
-  const display = document.getElementById("countdown");
+  const date = new Date(document.getElementById("examDate").value);
 
-  const interval = setInterval(() => {
-    const diff = end - Date.now();
+  setInterval(() => {
+    const now = new Date();
+    const diff = date - now;
 
     if (diff <= 0) {
-      clearInterval(interval);
-      display.innerText = "Done!";
+      document.getElementById("countdown").innerText = "Time up!";
       return;
     }
 
-    const m = Math.floor(diff / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    let mins = Math.floor((diff / (1000 * 60)) % 60);
 
-    display.innerText = `${m}m ${s}s`;
+    document.getElementById("countdown").innerText =
+      `${days}d ${hours}h ${mins}m`;
   }, 1000);
 }
 
-// ================= AI =================
-async function runAI() {
-  const inputEl = document.getElementById("aiInput");
-  const chatBox = document.getElementById("chatBox");
+// AI (WITH FAIL-SAFE)
+async function askAI() {
+  const input = document.getElementById("aiInput").value;
+  const chat = document.getElementById("aiChat");
 
-  const userMsg = inputEl.value;
-  if (!userMsg) return;
-
-  addMessage(userMsg, "user");
-  inputEl.value = "";
-
-  let reply = "Thinking...";
+  chat.innerHTML += `<p class="user">You: ${input}</p>`;
 
   try {
-    const res = await fetch(
-      "https://api.affiliateplus.xyz/api/chatbot?message=" +
-      encodeURIComponent(userMsg)
-    );
-    const data = await res.json();
-    reply = data.message || getLocalAI(userMsg);
-  } catch {
-    reply = getLocalAI(userMsg);
+    // TRY ONLINE AI (replace with your API later)
+    let response = await fetch("https://api.quotable.io/random");
+    let data = await response.json();
+
+    chat.innerHTML += `<p class="bot">AI: ${data.content}</p>`;
+  } catch (err) {
+    // FALLBACK (THIS PREVENTS FAILURE)
+    chat.innerHTML += `<p class="bot">AI: I'm offline but still here 😎</p>`;
   }
 
-  addMessage(reply, "bot");
-}
-
-function getLocalAI(input) {
-  input = input.toLowerCase();
-
-  if (input.includes("study")) return "Try 25-minute focus sessions.";
-  if (input.includes("tired")) return "Take a short break.";
-  if (input.includes("cgpa")) return "Track your units properly.";
-  if (input.includes("motivation")) return "Discipline beats motivation.";
-
-  return "Stay consistent. You're building something great.";
-}
-
-function addMessage(text, type) {
-  const chatBox = document.getElementById("chatBox");
-
-  const div = document.createElement("div");
-  div.className = `msg ${type}`;
-  div.innerText = text;
-
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// ================= TIMER =================
-function startTimer(mins) {
-  let seconds = mins * 60;
-
-  const interval = setInterval(() => {
-    seconds--;
-
-    if (seconds <= 0) {
-      clearInterval(interval);
-
-      if (Notification.permission === "granted") {
-        new Notification("Session Complete 🔥");
-      } else {
-        Notification.requestPermission();
-      }
-    }
-  }, 1000);
-}
-
-// ================= SERVICE WORKER =================
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+  document.getElementById("aiInput").value = "";
 }
