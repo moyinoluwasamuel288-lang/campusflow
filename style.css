@@ -1,160 +1,82 @@
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #0f172a;
   color: white;
+  margin: 0;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 700px;
   margin: auto;
   padding: 20px;
 }
 
 h1 {
   text-align: center;
+  color: #38bdf8;
 }
 
-section {
+.card {
   background: #1e293b;
-  padding: 15px;
-  margin: 15px 0;
-  border-radius: 10px;
-  transition: 0.3s;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-section:hover {
-  transform: scale(1.02);
-}
-
-textarea, input, select, button {
+textarea {
   width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
-  border: none;
-}
-
-button {
-  background: #38bdf8;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:active {
-  transform: scale(0.95);
-}
-
-/* AI CHAT */
-.ai-section {
-  display: flex;
-  flex-direction: column;
-  height: 300px;
-}
-
-.chat-box {
-  flex: 1;
-  background: #0f172a;
-  padding: 10px;
+  height: 100px;
   border-radius: 10px;
-  overflow-y: auto;
-  margin-bottom: 10px;
+  padding: 10px;
 }
 
-.chat-input {
+.controls {
+  margin-top: 10px;
   display: flex;
   gap: 10px;
 }
 
-.chat-input input {
-  flex: 1;
-}
-
-.chat-input button {
-  width: 50px;
-}
-
-.msg {
-  padding: 8px;
-  margin: 5px 0;
+button {
+  background: #38bdf8;
+  border: none;
+  padding: 8px 15px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
-.user {
-  background: #38bdf8;
-  color: black;
-  text-align: right;
+button:hover {
+  opacity: 0.8;
 }
 
-.bot {
-  background: #1e293b;
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #38bdf8;
-  color: black;
-  padding: 10px 20px;
-  border-radius: 10px;
-}body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-}
-
-section {
-  background: #1e293b;
-  padding: 15px;
-  margin: 15px 0;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-
-section:hover {
-  transform: scale(1.02);
-}
-
-textarea, input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
+input, select {
+  padding: 8px;
+  border-radius: 8px;
   border: none;
 }
 
-button {
-  background: #38bdf8;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:active {
-  transform: scale(0.95);
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #38bdf8;
-  color: black;
-  padding: 10px 20px;
+.chat-box {
+  height: 200px;
+  overflow-y: auto;
+  background: #020617;
+  padding: 10px;
   border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.ai-input {
+  display: flex;
+  gap: 10px;
+}
+
+.ai-input input {
+  flex: 1;
+}
+
+.user {
+  color: #38bdf8;
+}
+
+.bot {
+  color: #22c55e;
 }
