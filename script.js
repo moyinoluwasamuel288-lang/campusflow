@@ -55,6 +55,8 @@ function calculateCGPA() {
   const grades = document.querySelectorAll(".grade");
   const result = document.getElementById("result");
 
+  if (!result) return;
+
   if (!units.length || !grades.length) {
     if (result) result.innerText = "No courses added.";
     return;
@@ -83,11 +85,15 @@ function calculateCGPA() {
 }
 
 // ================= COUNTDOWN =================
+let countdownInterval = null;
+
 function setCountdown() {
   const input = document.getElementById("examDate");
   const display = document.getElementById("countdown");
 
   if (!input || !display) return;
+
+  if (countdownInterval) clearInterval(countdownInterval);
 
   const endTime = new Date(input.value).getTime();
 
@@ -96,12 +102,12 @@ function setCountdown() {
     return;
   }
 
-  const interval = setInterval(() => {
+  countdownInterval = setInterval(() => {
     const now = new Date().getTime();
     const distance = endTime - now;
 
     if (distance <= 0) {
-      clearInterval(interval);
+      clearInterval(countdownInterval);
       display.innerText = "Time's up!";
       return;
     }
