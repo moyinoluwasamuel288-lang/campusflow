@@ -1,123 +1,130 @@
 // ================= NOTES =================
-function saveNotes() {
-  try {
-    const textarea = document.getElementById("notes");
-    if (!textarea) return;
+const textarea = document.getElementById("notes");
+const fontSelect = document.getElementById("fontSelect");
 
-    const note = textarea.value;
-    localStorage.setItem("campus_notes", note);
-
-    alert("Notes saved!");
-  } catch (err) {
-    console.error("Error saving notes:", err);
+window.onload = () => {
+  textarea.value = localStorage.getItem("notes") || "";
+  const font = localStorage.getItem("font");
+  if (font) {
+    textarea.style.fontFamily = font;
+    fontSelect.value = font;
   }
-}
+};
 
-// LOAD NOTES ON START
-window.addEventListener("load", () => {
-  try {
-    const textarea = document.getElementById("notes");
-    if (!textarea) return;
-
-    const saved = localStorage.getItem("campus_notes");
-    if (saved) textarea.value = saved;
-  } catch (err) {
-    console.error("Error loading notes:", err);
-  }
+textarea.addEventListener("input", () => {
+  localStorage.setItem("notes", textarea.value);
+  showToast("Saved");
 });
 
-// ================= FONT =================
-function changeFont(fontFamily) {
-  const textarea = document.getElementById("notes");
-  if (!textarea) return;
+fontSelect.addEventListener("change", (e) => {
+  textarea.style.fontFamily = e.target.value;
+  localStorage.setItem("font", e.target.value);
+});
 
-  textarea.style.fontFamily = fontFamily || "Arial";
-}
-
-// ================= COURSES =================
+// ================= CGPA =================
 function addCourse() {
-  const container = document.getElementById("course-list");
-  if (!container) return;
-
   const div = document.createElement("div");
 
   div.innerHTML = `
     <input type="number" class="unit" placeholder="Units">
-    <input type="number" class="grade" placeholder="Grade (0-5)">
+    <input type="number" class="grade" placeholder="Grade">
   `;
 
-  container.appendChild(div);
+  document.getElementById("course-list").appendChild(div);
 }
 
-// ================= CGPA =================
 function calculateCGPA() {
   const units = document.querySelectorAll(".unit");
   const grades = document.querySelectorAll(".grade");
-  const result = document.getElementById("result");
 
-  if (!result) return;
+  let totalU = 0;
+  let totalP = 0;
 
-  if (!units.length || !grades.length) {
-    if (result) result.innerText = "No courses added.";
-    return;
-  }
-
-  let totalUnits = 0;
-  let totalPoints = 0;
-
-  for (let i = 0; i < units.length; i++) {
-    const unit = parseFloat(units[i].value);
+  units.forEach((u, i) => {
+    const unit = parseFloat(u.value);
     const grade = parseFloat(grades[i].value);
 
-    if (isNaN(unit) || isNaN(grade)) continue;
+    if (!isNaN(unit) && !isNaN(grade)) {
+      totalU += unit;
+      totalP += unit * grade;
+    }
+  });
 
-    totalUnits += unit;
-    totalPoints += unit * grade;
-  }
-
-  if (totalUnits === 0) {
-    result.innerText = "Invalid input.";
-    return;
-  }
-
-  const cgpa = (totalPoints / totalUnits).toFixed(2);
-  result.innerText = `CGPA: ${cgpa}`;
+  document.getElementById("result").innerText =
+    totalU ? "CGPA: " + (totalP / totalU).toFixed(2) : "Invalid input";
 }
 
 // ================= COUNTDOWN =================
-let countdownInterval = null;
-
 function setCountdown() {
-  const input = document.getElementById("examDate");
+  const end = new Date(document.getElementById("examDate").value).getTime();
   const display = document.getElementById("countdown");
 
-  if (!input || !display) return;
+  const interval = setInterval(() => {
+    const diff = end - Date.now();
 
-  if (countdownInterval) clearInterval(countdownInterval);
-
-  const endTime = new Date(input.value).getTime();
-
-  if (!input.value || isNaN(endTime)) {
-    display.innerText = "Please select a valid date.";
-    return;
-  }
-
-  countdownInterval = setInterval(() => {
-    const now = new Date().getTime();
-    const distance = endTime - now;
-
-    if (distance <= 0) {
-      clearInterval(countdownInterval);
-      display.innerText = "Time's up!";
+    if (diff <= 0) {
+      clearInterval(interval);
+      display.innerText = "Done!";
       return;
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-    const mins = Math.floor((distance / (1000 * 60)) % 60);
-    const secs = Math.floor((distance / 1000) % 60);
+    const m = Math.floor(diff / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
 
-    display.innerText =
-      `${days}d ${hours}h ${mins}m ${secs}s`;
+    display.innerText = `${m}m ${s}s`;
   }, 1000);
+}
+
+// ================= AI =================
+async function runAI() {
+  const input = document.getElementById("aiInput").value;
+  const output = document.getElementById("aiOutput");
+
+  output.innerText = "Thinking...";
+
+  try {
+    const res = await fetch(
+      "https://api.allorigins.win/raw?url=https://api.affiliateplus.xyz/api/chatbot?message=" +
+      encodeURIComponent(input)
+    );
+
+    const data = await res.json();
+    output.innerText = data.message;
+  } catch {
+    output.innerText = "AI failed.";
+  }
+}
+
+// ================= TIMER =================
+function startTimer(mins) {
+  let seconds = mins * 60;
+
+  const interval = setInterval(() => {
+    seconds--;
+
+    if (seconds <= 0) {
+      clearInterval(interval);
+
+      if (Notification.permission === "granted") {
+        new Notification("Session Complete 🔥");
+      } else {
+        Notification.requestPermission();
+      }
+    }
+  }, 1000);
+}
+
+// ================= TOAST =================
+function showToast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerText = msg;
+  document.body.appendChild(t);
+
+  setTimeout(() => t.remove(), 1500);
+}
+
+// ================= SERVICE WORKER =================
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
 }
