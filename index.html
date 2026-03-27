@@ -2,66 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CampusFlow</title>
-
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
-
 <body>
-  <div class="container">
-    <h1>CampusFlow</h1>
 
-    <!-- NOTES -->
-    <section>
-      <h2>Notes</h2>
-      <textarea id="notes" placeholder="Write your notes..."></textarea>
+<div class="container">
 
-      <select id="fontSelect">
+  <h1>CampusFlow</h1>
+
+  <!-- NOTES -->
+  <section class="card">
+    <h2>Notes</h2>
+    <textarea id="notes" placeholder="Write your notes..."></textarea>
+    
+    <div class="controls">
+      <select onchange="changeFont(this.value)">
         <option value="Arial">Arial</option>
-        <option value="Courier New">Courier</option>
         <option value="Georgia">Georgia</option>
+        <option value="Courier New">Courier</option>
       </select>
-    </section>
 
-    <!-- CGPA -->
-    <section>
-      <h2>CGPA Calculator</h2>
-      <div id="course-list"></div>
-      <button onclick="addCourse()">Add Course</button>
-      <button onclick="calculateCGPA()">Calculate</button>
-      <p id="result"></p>
-    </section>
+      <button onclick="saveNotes()">Save</button>
+    </div>
+  </section>
 
-    <!-- COUNTDOWN -->
-    <section>
-      <h2>Countdown</h2>
-      <input type="datetime-local" id="examDate">
-      <button onclick="setCountdown()">Start</button>
-      <p id="countdown"></p>
-    </section>
+  <!-- CGPA -->
+  <section class="card">
+    <h2>CGPA Calculator</h2>
 
-    <!-- AI CHAT -->
-    <section class="ai-section">
-      <h2>AI Assistant</h2>
+    <div id="course-list"></div>
 
-      <div id="chatBox" class="chat-box"></div>
+    <button onclick="addCourse()">+ Add Course</button>
+    <button onclick="calculateCGPA()">Calculate</button>
 
-      <div class="chat-input">
-        <input id="aiInput" placeholder="Ask something...">
-        <button onclick="runAI()">➤</button>
-      </div>
-    </section>
+    <h3 id="result"></h3>
+  </section>
 
-    <!-- FOCUS -->
-    <section>
-      <h2>Focus</h2>
-      <button onclick="startTimer(25)">Start 25 Min</button>
-    </section>
+  <!-- COUNTDOWN -->
+  <section class="card">
+    <h2>Exam Countdown</h2>
 
-  </div>
+    <input type="datetime-local" id="examDate">
+    <button onclick="setCountdown()">Start</button>
 
-  <script src="script.js"></script>
+    <h3 id="countdown"></h3>
+  </section>
+
+  <!-- AI -->
+  <section class="card ai-card">
+    <h2>AI Assistant</h2>
+
+    <div id="aiChat" class="chat-box"></div>
+
+    <div class="ai-input">
+      <input id="aiInput" placeholder="Ask something..." />
+      <button onclick="askAI()">Send</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
