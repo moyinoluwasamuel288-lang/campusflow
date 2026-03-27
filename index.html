@@ -42,12 +42,16 @@
       <p id="countdown"></p>
     </section>
 
-    <!-- AI -->
-    <section>
+    <!-- AI CHAT -->
+    <section class="ai-section">
       <h2>AI Assistant</h2>
-      <input id="aiInput" placeholder="Ask anything...">
-      <button onclick="runAI()">Ask</button>
-      <p id="aiOutput"></p>
+
+      <div id="chatBox" class="chat-box"></div>
+
+      <div class="chat-input">
+        <input id="aiInput" placeholder="Ask something...">
+        <button onclick="runAI()">➤</button>
+      </div>
     </section>
 
     <!-- FOCUS -->
@@ -55,6 +59,7 @@
       <h2>Focus</h2>
       <button onclick="startTimer(25)">Start 25 Min</button>
     </section>
+
   </div>
 
   <script src="script.js"></script>
