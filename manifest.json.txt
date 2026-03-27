@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "CampusFlow",
   "short_name": "Campus",
   "start_url": "/",
