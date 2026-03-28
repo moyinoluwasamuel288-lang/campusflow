@@ -1,27 +1,37 @@
-// PWA REGISTER
+// REGISTER SERVICE WORKER
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 
-// LOAD NOTES
+// INSTALL BUTTON
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+  }
+});
+
+// NOTES
 window.onload = () => {
   document.getElementById("notes").value =
     localStorage.getItem("notes") || "";
 };
 
-// SAVE NOTES
 function saveNotes() {
-  const val = document.getElementById("notes").value;
-  localStorage.setItem("notes", val);
+  const notes = document.getElementById("notes").value;
+  localStorage.setItem("notes", notes);
   alert("Saved!");
 }
 
-// FONT
-function changeFont(font) {
-  document.getElementById("notes").style.fontFamily = font;
-}
-
-// ADD COURSE
+// CGPA
 function addCourse() {
   const div = document.createElement("div");
 
@@ -40,7 +50,6 @@ function addCourse() {
   document.getElementById("course-list").appendChild(div);
 }
 
-// CGPA
 function calculateCGPA() {
   const units = document.querySelectorAll(".unit");
   const grades = document.querySelectorAll(".grade");
@@ -61,10 +70,10 @@ function calculateCGPA() {
   let cgpa = totalPoints / totalUnits;
 
   document.getElementById("result").innerText =
-    isNaN(cgpa) ? "Invalid" : "CGPA: " + cgpa.toFixed(2);
+    isNaN(cgpa) ? "Invalid Input" : "CGPA: " + cgpa.toFixed(2);
 }
 
-// TIMER + NOTIFICATION
+// TIMER + NOTIFICATIONS
 function startCountdown() {
   const date = new Date(document.getElementById("examDate").value);
 
@@ -77,8 +86,8 @@ function startCountdown() {
     if (diff <= 0) {
       document.getElementById("countdown").innerText = "Time up!";
 
-      new Notification("Exam Time!", {
-        body: "Your exam has started!"
+      new Notification("CampusFlow", {
+        body: "Your exam time has arrived!"
       });
 
       return;
@@ -92,25 +101,23 @@ function startCountdown() {
   }, 1000);
 }
 
-// AI (SMART LOCAL + ONLINE FALLBACK)
+// SMART AI
 function askAI() {
-  const input = document.getElementById("aiInput").value;
+  const input = document.getElementById("aiInput").value.toLowerCase();
   const chat = document.getElementById("chat");
 
   chat.innerHTML += `<p><b>You:</b> ${input}</p>`;
 
-  let reply = "";
-
-  // LOCAL INTELLIGENCE (NEVER FAILS)
-  if (input.includes("cgpa")) {
-    reply = "Use the CGPA calculator above.";
-  } else if (input.includes("exam")) {
-    reply = "Set your exam date in the countdown section.";
-  } else {
-    reply = "I'm still improving 😅 but I got you.";
-  }
+  let reply = generateResponse(input);
 
   chat.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
 
   document.getElementById("aiInput").value = "";
+}
+
+function generateResponse(input) {
+  if (input.includes("cgpa")) return "Use the CGPA section above.";
+  if (input.includes("study")) return "Try 25-minute focus sessions.";
+  if (input.includes("exam")) return "Set your countdown timer.";
+  return "Ask something more specific.";
 }
