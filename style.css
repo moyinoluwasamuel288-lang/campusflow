@@ -1,27 +1,26 @@
 body {
+  margin: 0;
   font-family: Arial;
   background: #0f172a;
   color: white;
-  margin: 0;
 }
 
 .container {
-  max-width: 700px;
+  max-width: 600px;
   margin: auto;
-  padding: 20px;
+  padding: 15px;
 }
 
 h1 {
   text-align: center;
-  color: #38bdf8;
+  font-size: 24px;
 }
 
 .card {
   background: #1e293b;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
 }
 
 textarea {
@@ -32,51 +31,50 @@ textarea {
 }
 
 .controls {
-  margin-top: 10px;
   display: flex;
   gap: 10px;
+  margin-top: 10px;
 }
 
 button {
   background: #38bdf8;
   border: none;
-  padding: 8px 15px;
+  padding: 8px;
   border-radius: 8px;
-  cursor: pointer;
-}
-
-button:hover {
-  opacity: 0.8;
 }
 
 input, select {
+  width: 100%;
   padding: 8px;
   border-radius: 8px;
-  border: none;
+  margin-top: 5px;
 }
 
-.chat-box {
-  height: 200px;
+.chat {
+  height: 150px;
   overflow-y: auto;
   background: #020617;
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
 }
 
 .ai-input {
   display: flex;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .ai-input input {
   flex: 1;
 }
 
-.user {
-  color: #38bdf8;
-}
+/* MOBILE OPTIMIZATION */
+@media (max-width: 500px) {
+  h1 {
+    font-size: 20px;
+  }
 
-.bot {
-  color: #22c55e;
+  .card {
+    padding: 12px;
+  }
 }
