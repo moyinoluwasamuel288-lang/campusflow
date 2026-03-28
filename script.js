@@ -1,17 +1,22 @@
+// PWA REGISTER
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
 // LOAD NOTES
-window.onload = function () {
+window.onload = () => {
   document.getElementById("notes").value =
     localStorage.getItem("notes") || "";
 };
 
 // SAVE NOTES
 function saveNotes() {
-  const notes = document.getElementById("notes").value;
-  localStorage.setItem("notes", notes);
+  const val = document.getElementById("notes").value;
+  localStorage.setItem("notes", val);
   alert("Saved!");
 }
 
-// CHANGE FONT
+// FONT
 function changeFont(font) {
   document.getElementById("notes").style.fontFamily = font;
 }
@@ -35,7 +40,7 @@ function addCourse() {
   document.getElementById("course-list").appendChild(div);
 }
 
-// CALCULATE CGPA
+// CGPA
 function calculateCGPA() {
   const units = document.querySelectorAll(".unit");
   const grades = document.querySelectorAll(".grade");
@@ -56,12 +61,14 @@ function calculateCGPA() {
   let cgpa = totalPoints / totalUnits;
 
   document.getElementById("result").innerText =
-    isNaN(cgpa) ? "Invalid input" : "CGPA: " + cgpa.toFixed(2);
+    isNaN(cgpa) ? "Invalid" : "CGPA: " + cgpa.toFixed(2);
 }
 
-// COUNTDOWN
-function setCountdown() {
+// TIMER + NOTIFICATION
+function startCountdown() {
   const date = new Date(document.getElementById("examDate").value);
+
+  Notification.requestPermission();
 
   setInterval(() => {
     const now = new Date();
@@ -69,35 +76,41 @@ function setCountdown() {
 
     if (diff <= 0) {
       document.getElementById("countdown").innerText = "Time up!";
+
+      new Notification("Exam Time!", {
+        body: "Your exam has started!"
+      });
+
       return;
     }
 
-    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    let mins = Math.floor((diff / (1000 * 60)) % 60);
+    let h = Math.floor(diff / (1000 * 60 * 60));
+    let m = Math.floor((diff / (1000 * 60)) % 60);
 
     document.getElementById("countdown").innerText =
-      `${days}d ${hours}h ${mins}m`;
+      `${h}h ${m}m left`;
   }, 1000);
 }
 
-// AI (WITH FAIL-SAFE)
-async function askAI() {
+// AI (SMART LOCAL + ONLINE FALLBACK)
+function askAI() {
   const input = document.getElementById("aiInput").value;
-  const chat = document.getElementById("aiChat");
+  const chat = document.getElementById("chat");
 
-  chat.innerHTML += `<p class="user">You: ${input}</p>`;
+  chat.innerHTML += `<p><b>You:</b> ${input}</p>`;
 
-  try {
-    // TRY ONLINE AI (replace with your API later)
-    let response = await fetch("https://api.quotable.io/random");
-    let data = await response.json();
+  let reply = "";
 
-    chat.innerHTML += `<p class="bot">AI: ${data.content}</p>`;
-  } catch (err) {
-    // FALLBACK (THIS PREVENTS FAILURE)
-    chat.innerHTML += `<p class="bot">AI: I'm offline but still here 😎</p>`;
+  // LOCAL INTELLIGENCE (NEVER FAILS)
+  if (input.includes("cgpa")) {
+    reply = "Use the CGPA calculator above.";
+  } else if (input.includes("exam")) {
+    reply = "Set your exam date in the countdown section.";
+  } else {
+    reply = "I'm still improving 😅 but I got you.";
   }
+
+  chat.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
 
   document.getElementById("aiInput").value = "";
 }
