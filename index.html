@@ -1,54 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusFlow</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusFlow</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#38bdf8">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e293b">
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>CampusFlow</h1>
+<h1>CampusFlow</h1>
 
-  <button id="installBtn" class="install-btn">Install App</button>
+<!-- CGPA -->
+<div class="card">
+<h2>CGPA Calculator</h2>
 
-  <!-- NOTES -->
-  <section class="card">
-    <h2>Notes</h2>
-    <textarea id="notes"></textarea>
-    <button onclick="saveNotes()">Save</button>
-  </section>
+<div id="course-list"></div>
 
-  <!-- CGPA -->
-  <section class="card">
-    <h2>CGPA</h2>
-    <div id="course-list"></div>
-    <button onclick="addCourse()">+ Course</button>
-    <button onclick="calculateCGPA()">Calculate</button>
-    <h3 id="result"></h3>
-  </section>
+<button onclick="addCourse()">Add Course</button>
+<button onclick="calculateCGPA()">Calculate</button>
 
-  <!-- TIMER -->
-  <section class="card">
-    <h2>Countdown</h2>
-    <input type="datetime-local" id="examDate">
-    <button onclick="startCountdown()">Start</button>
-    <h3 id="countdown"></h3>
-  </section>
+<h3 id="result"></h3>
+</div>
 
-  <!-- AI -->
-  <section class="card">
-    <h2>AI Assistant</h2>
-    <div id="chat" class="chat"></div>
-    <input id="aiInput" placeholder="Ask something...">
-    <button onclick="askAI()">Send</button>
-  </section>
+<!-- TIMER -->
+<div class="card">
+<h2>Exam Countdown</h2>
+
+<input type="datetime-local" id="examDate">
+<button onclick="startCountdown()">Start Timer</button>
+
+<h3 id="countdown"></h3>
+</div>
 
 </div>
 
