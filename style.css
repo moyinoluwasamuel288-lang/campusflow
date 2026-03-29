@@ -22,31 +22,18 @@ h1 {
   border-radius: 12px;
 }
 
-textarea, input {
+input, select {
   width: 100%;
   padding: 10px;
-  border-radius: 8px;
   margin-top: 5px;
+  border-radius: 8px;
 }
 
 button {
   width: 100%;
-  margin-top: 10px;
   padding: 10px;
+  margin-top: 10px;
   border: none;
   border-radius: 8px;
   background: #38bdf8;
-  color: black;
-}
-
-.chat {
-  height: 120px;
-  overflow-y: auto;
-  background: black;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.install-btn {
-  background: #22c55e;
 }
