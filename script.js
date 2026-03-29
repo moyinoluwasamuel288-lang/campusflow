@@ -1,34 +1,6 @@
-// REGISTER SERVICE WORKER
+// SERVICE WORKER
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
-}
-
-// INSTALL BUTTON
-let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  document.getElementById("installBtn").style.display = "block";
-});
-
-document.getElementById("installBtn").addEventListener("click", () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-  }
-});
-
-// NOTES
-window.onload = () => {
-  document.getElementById("notes").value =
-    localStorage.getItem("notes") || "";
-};
-
-function saveNotes() {
-  const notes = document.getElementById("notes").value;
-  localStorage.setItem("notes", notes);
-  alert("Saved!");
 }
 
 // CGPA
@@ -61,7 +33,7 @@ function calculateCGPA() {
     let u = parseFloat(units[i].value);
     let g = parseFloat(grades[i].value);
 
-    if (!isNaN(u) && !isNaN(g)) {
+    if (!isNaN(u)) {
       totalUnits += u;
       totalPoints += u * g;
     }
@@ -70,10 +42,10 @@ function calculateCGPA() {
   let cgpa = totalPoints / totalUnits;
 
   document.getElementById("result").innerText =
-    isNaN(cgpa) ? "Invalid Input" : "CGPA: " + cgpa.toFixed(2);
+    isNaN(cgpa) ? "Enter valid values" : "CGPA: " + cgpa.toFixed(2);
 }
 
-// TIMER + NOTIFICATIONS
+// TIMER
 function startCountdown() {
   const date = new Date(document.getElementById("examDate").value);
 
@@ -84,12 +56,10 @@ function startCountdown() {
     const diff = date - now;
 
     if (diff <= 0) {
-      document.getElementById("countdown").innerText = "Time up!";
-
-      new Notification("CampusFlow", {
-        body: "Your exam time has arrived!"
+      document.getElementById("countdown").innerText = "Time Up!";
+      new Notification("Exam Time!", {
+        body: "Your exam has started"
       });
-
       return;
     }
 
@@ -97,27 +67,6 @@ function startCountdown() {
     let m = Math.floor((diff / (1000 * 60)) % 60);
 
     document.getElementById("countdown").innerText =
-      `${h}h ${m}m left`;
+      `${h}h ${m}m remaining`;
   }, 1000);
-}
-
-// SMART AI
-function askAI() {
-  const input = document.getElementById("aiInput").value.toLowerCase();
-  const chat = document.getElementById("chat");
-
-  chat.innerHTML += `<p><b>You:</b> ${input}</p>`;
-
-  let reply = generateResponse(input);
-
-  chat.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
-
-  document.getElementById("aiInput").value = "";
-}
-
-function generateResponse(input) {
-  if (input.includes("cgpa")) return "Use the CGPA section above.";
-  if (input.includes("study")) return "Try 25-minute focus sessions.";
-  if (input.includes("exam")) return "Set your countdown timer.";
-  return "Ask something more specific.";
 }
